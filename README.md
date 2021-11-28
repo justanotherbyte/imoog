@@ -1,4 +1,4 @@
-![nginx cloud](https://media.discordapp.net/attachments/806271593956507698/914636631519145994/icon-SVG_Cloud-Migrate-Arrows-Upload-Multiple.png)
+![cloudflare cloud](https://media.discordapp.net/attachments/806271593956507698/914637696650067988/cdn-global-hero-illustration.png)
 # imoog
 
 ### A simple to use database-based deployable CDN node for hobbyist developers who wish to have their own CDN!
