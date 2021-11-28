@@ -1,0 +1,5 @@
+starlette <= 0.17.1
+pymongo[srv] <= 3.12.1
+asyncpg <= 0.25.0
+motor <= 2.5.1
+python-multipart <= 0.0.5
