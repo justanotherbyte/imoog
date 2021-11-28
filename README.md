@@ -11,6 +11,10 @@
 - To automatically install the respective dependencies, please run `pip install -r requirements.txt` in the directory where you wish to store your node.
 - It is recommended to house the `imoog` folder within another folder, as there are other files that come with this repo, that are not housed within the `imoog` folder.
 
+## Settings
+- imoog offers granular control over many key aspects of the node. Most of these can be extremely overwhelming. Go ahead and hop into the `imoog/settings.py` file, where you'll find detailed explanations of each and every setting.
+- Another thing that can be overwhelming are the 2 database drivers. How do you configure them? What are their optimal settings. Again, everything is explained inside the `imoog/settings.py` file.
+
 ## Proxy
 ---
 - In order to use this node cleanly, I recommend placing yourself behind a proxy server. One of the most popular choices is [`NGINX`](https://www.nginx.com/).
