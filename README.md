@@ -1,4 +1,4 @@
-![diagram](https://media.discordapp.net/attachments/806271593956507698/914619170287669258/unknown.png)
+![diagram](https://media.discordapp.net/attachments/806271593956507698/914635064481034240/unknown.png)
 # imoog
 
 ### A simple to use database-based deployable CDN node for hobbyist developers who wish to have their own CDN!
@@ -10,6 +10,15 @@
 - Install a production asgi server of your choice. The 2 I recommend are [`hypercorn`](https://pypi.org/project/hypercorn/) and [`uvicorn`](https://pypi.org/project/uvicorn/). Installing their base packages will suffice.
 - To automatically install the respective dependencies, please run `pip install -r requirements.txt` in the directory where you wish to store your node.
 - It is recommended to house the `imoog` folder within another folder, as there are other files that come with this repo, that are not housed within the `imoog` folder.
+
+## Proxy
+---
+- In order to use this node cleanly, I recommend placing yourself behind a proxy server. One of the most popular choices is [`NGINX`](https://www.nginx.com/).
+
+## Caching + Cloudflare
+---
+- The Imoog Node handles a lot of the caching for you, however, a good next step would be to place your CDN on cloudflare. 
+- Cloudflare has some awesome caching solutions. Also, overall, they make it easy to expose your CDN to the open-web.
 
 ## Uploading Files
 ---
