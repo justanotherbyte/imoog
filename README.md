@@ -8,6 +8,8 @@
 - Clone this repo via this command: `git clone https://github.com/justanotherbyte/imoog`
 - Go into the `imoog/settings.py` file and adjust your settings. Examples for both database drivers have been provided in the file.
 - Install a production asgi server of your choice. The 2 I recommend are [`hypercorn`](https://pypi.org/project/hypercorn/) and [`uvicorn`](https://pypi.org/project/uvicorn/). Installing their base packages will suffice.
+- To automatically install the respective dependencies, please run `pip install -r requirements.txt` in the directory where you wish to store your node.
+- It is recommended to house the `imoog` folder within another folder, as there are other files that come with this repo, that are not housed within the `imoog` folder.
 
 ## Uploading Files
 ---
