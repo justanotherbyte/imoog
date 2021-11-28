@@ -1,4 +1,4 @@
-![cloudflare cloud](https://www.cloudflare.com/static/fa3ed6912f05302e16063f8b66b18a52/cdn-customizable-cdn-diagram.svg)
+![cloudflare cloud](https://media.discordapp.net/attachments/806271593956507698/914639645348888626/unknown.png?width=1440&height=663)
 # imoog
 
 ### A simple to use database-based deployable CDN node for hobbyist developers who wish to have their own CDN!
