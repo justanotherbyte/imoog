@@ -13,8 +13,8 @@ DATABASE_DRIVERS = {
 #     "driver": "imoog.database.postgres", # https://www.postgresql.org/
 #     "config": {
 #         "connection_uri": "your connection uri",
-#         "max_size": 100,
-#         "min_size": 75,
+#         "max_size": 100, # the maximum amount of connections to create for the PostgreSQL connection pool
+#         "min_size": 75, # the minimum amount of connections to create for the PostgreSQL connection pool
 #         "table_name": "my_images"
 #     }
 # }
