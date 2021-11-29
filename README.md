@@ -48,6 +48,8 @@ uvicorn imoog.app:app --workers 3
 ```
 Please keep in mind that both Uvicorn and Hypercorn support running applications through the Unix Domain Socket (UDS) protocol rather than the Transmission Control Protocol (TCP). The choice is yours.
 
+On another note, keep in mind that the amount of workers you have will only affect performance if your machine's CPU core count supports it. Else, increasing the worker count will not be helpful at all.
+
 
 ## Settings
 ---
