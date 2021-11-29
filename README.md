@@ -46,6 +46,7 @@ uvicorn app:app --workers 3
 # outside of the imoog directory
 uvicorn imoog.app:app --workers 3
 ```
+Please keep in mind that both Uvicorn and Hypercorn support running applications through the Unix Domain Socket (UDS) protocol rather than the Transmission Control Protocol (TCP). The choice is yours.
 
 
 ## Settings
