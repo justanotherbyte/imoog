@@ -28,7 +28,28 @@ A database-based CDN node supporting PostgreSQL and MongoDB backends.
 - To automatically install the respective dependencies, please run `pip install -r requirements.txt` in the directory where you wish to store your node.
 - It is recommended to house the `imoog` folder within another folder, as there are other files that come with this repo, that are not housed within the `imoog` folder.
 
+## Running your ASGI server
+---
+#### Hypercorn
+```sh
+# inside the imoog directory
+hypercorn app:app --graceful-timeout 3 --workers 3
+
+# outside of the imoog directory
+hypercorn imoog.app:app --graceful-timeout 3 --workers 3
+```
+#### Uvicorn
+```sh
+# inside the imoog directory
+uvicorn app:app --workers 3 
+
+# outside of the imoog directory
+uvicorn imoog.app:app --workers 3
+```
+
+
 ## Settings
+---
 - imoog offers granular control over many key aspects of the node. Most of these can be extremely overwhelming. Go ahead and hop into the `imoog/settings.py` file, where you'll find detailed explanations of each and every setting.
 - Another thing that can be overwhelming are the 2 database drivers. How do you configure them? What are their optimal settings. Again, everything is explained inside the `imoog/settings.py` file.
 
