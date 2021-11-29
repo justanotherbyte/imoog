@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from starlette.datastructures import UploadFile, MultiDict
 
 
-async def upload_file(request: Request):
+async def upload_file(request: Request) -> JSONResponse:
     # the view that will handle uploading files to our database.
     auth = request.headers.get("Authorization")
     if auth != SECRET_KEY:
@@ -54,7 +54,7 @@ async def upload_file(request: Request):
     }
     return JSONResponse(content, status_code=200)
 
-async def deliver_file(request: Request):
+async def deliver_file(request: Request) -> Response:
     file_id: str = request.path_params["name"]
     file_id = file_id.split(".")[0] # if a file extension has been provided, we split on the '.',
     # and return the file name.

@@ -44,6 +44,7 @@ class PostgresDriver(Driver):
         mime = row["mime"]
         decompressed = self.decompress(image)
         return (decompressed, mime)
+        
     async def cleanup(self):
         try:
             await self._connection.close()
