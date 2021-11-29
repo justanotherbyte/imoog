@@ -50,6 +50,8 @@ Please keep in mind that both Uvicorn and Hypercorn support running applications
 
 On another note, keep in mind that the amount of workers you have will only affect performance if your machine's CPU core count supports it. Else, increasing the worker count will not be helpful at all.
 
+To read more about sockets and which protocol will be the right one for you, please refer to this article: https://www.digitalocean.com/community/tutorials/understanding-sockets
+
 
 ## Settings
 ---
