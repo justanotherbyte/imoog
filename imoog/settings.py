@@ -27,7 +27,7 @@ MAX_CACHE_SIZE = 100 # set a maximum cache size. If you want a cache with no lim
 # simply set this value to 'inf'. This is setting is useful if you have a limited amount
 # of memory to work with.
 
-SECRET_KEY = "Universemandarin" # a secret key that will be checked in the 'Authorization' header
+SECRET_KEY = "SET_A_CUSTOM_KEY" # a secret key that will be checked in the 'Authorization' header
 # whenever a POST request is made to /upload endpoint.
 
 NOT_FOUND_STATUS_CODE = 404 # the status code to return when a file is not found.

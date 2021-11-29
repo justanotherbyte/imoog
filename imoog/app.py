@@ -52,7 +52,7 @@ def _check_driver() -> Tuple[type, str]:
     
 def update_cache(key: str, value: bytes) -> dict:
     max_size = settings.MAX_CACHE_SIZE
-    if len(app.image_cache.keys()) >= max_size:
+    if len(app.image_cache.keys()) >= float(max_size):
         return
     
     app.image_cache[key] = value
