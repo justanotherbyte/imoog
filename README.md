@@ -80,7 +80,7 @@ import asyncio
 async def main():
     session = aiohttp.ClientSession()
     form  = aiohttp.FormData()
-    form.add_field("file", b'imagebyteshere', content_type="bytes")
+    form.add_field("file", b'imagebyteshere', content_type="application/octet-stream")
     resp = await session.post("http://localhost:8000/upload", data=form, headers={"Authorization": "myawesomesecretkey"})
     returned_data = await resp.json()
     print(returned_data)
