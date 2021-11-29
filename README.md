@@ -1,5 +1,22 @@
-![cloudflare cloud](https://media.discordapp.net/attachments/806271593956507698/914639645348888626/unknown.png?width=1440&height=663)
-# imoog
+
+<h1 align="center">
+<sub>
+    <img src="https://www.cloudflare.com/static/e483f0dab463205cec2642ab111e81fc/cdn-global-hero-illustration.svg" height="36">
+</sub>
+&nbsp;
+imoog
+</h1>
+<p align="center">
+<sup>
+A database-based CDN node supporting PostgreSQL and MongoDB backends. 
+</sup>
+<br>
+<sup>
+    <a href="https://www.digitalocean.com/community/tutorials/how-to-host-a-website-using-cloudflare-and-nginx-on-ubuntu-16-04">Ubuntu host guide by Digital Ocean.</a>
+</sup>
+</p>
+
+***
 
 ### A simple to use database-based deployable CDN node for hobbyist developers who wish to have their own CDN!
 
