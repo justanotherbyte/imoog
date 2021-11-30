@@ -11,6 +11,8 @@ import asyncpg
 from starlette.applications import Starlette
 from starlette.routing import Route
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from imoog.views import upload_file, deliver_file
@@ -38,7 +40,11 @@ routes = [
 ]
 
 app = Starlette(routes=routes)
-app.add_middleware(CORSMiddleware)
+app.add_middleware(CORSMiddleware, allow_origins = settings.CORS_ALLOWED_ORIGINS)
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.ALLOWED_HOSTS)
+
+if settings.ENFORCE_SECURE_SCHEME is True:
+    app.add_middleware(HTTPSRedirectMiddleware)
 
 app.image_cache = {} # Dict[str, bytes]
 app.db_driver = None

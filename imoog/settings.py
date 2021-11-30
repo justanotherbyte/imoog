@@ -44,3 +44,14 @@ DELIVER_ENDPOINT_METHODS = ["GET"] # the HTTP methods that your deliver endpoint
 DELIVER_ENDPOINT = "/image/" # the path for your deliver endpoint. the default is '/image/'.
 # an example would be: https://yourdomain.com/<DELIVER_ENDPOINT>/<UNQIUE_FILE_ID>
 # this MUST end with a trailing slash.
+
+ALLOWED_HOSTS = ["*"] # set a list of allowed hosts. 
+# by default, this is set to ALL hosts, as indicated through the '*'
+# this internally uses Starlette's Trusted Host middleware (starlette.middleware.trustedhost.TrustedHostMiddleware)
+
+ENFORCE_SECURE_SCHEME = True # any incoming requests must be from,
+# the https or wss protocols. Any other protcol will be redirected to their secure variant.
+
+CORS_ALLOWED_ORIGINS = ["*"] # a list of allowed origins
+# that browsers are allowed to use in a Cross-Domain context.
+# by default, this is set to all domains.
