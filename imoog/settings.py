@@ -1,9 +1,9 @@
 DATABASE_DRIVERS = {
     "driver": "imoog.database.mongo", # https://www.mongodb.com/
     "config": {
-        "connection_uri": "your mongodb connection uri",
-        "database_name": "your database name",
-        "collection_name": "your collection name"
+        "connection_uri": "database connection uri",
+        "database_name": "database name",
+        "collection_name": "collection name"
     }
 }
 
@@ -49,7 +49,7 @@ ALLOWED_HOSTS = ["*"] # set a list of allowed hosts.
 # by default, this is set to ALL hosts, as indicated through the '*'
 # this internally uses Starlette's Trusted Host middleware (starlette.middleware.trustedhost.TrustedHostMiddleware)
 
-ENFORCE_SECURE_SCHEME = True # any incoming requests must be from,
+ENFORCE_SECURE_SCHEME = False # any incoming requests must be from,
 # the https or wss protocols. Any other protcol will be redirected to their secure variant.
 
 CORS_ALLOWED_ORIGINS = ["*"] # a list of allowed origins

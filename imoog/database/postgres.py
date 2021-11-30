@@ -1,16 +1,31 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Tuple
+from typing import Tuple
+
+import asyncpg
 
 from .drivers import Driver # import the base driver impl
 
-if TYPE_CHECKING:
-    from asyncpg import Pool
-
 
 class PostgresDriver(Driver):
-    def __init__(self, pool: Pool):
-        super().__init__(conn=pool, identifier="psql")
+    async def connect(self, **kwargs):
+        self.identifier = "postgres"
+
+        connection_uri = kwargs["connection_uri"]
+        max_size = kwargs["max_size"]
+        min_size = kwargs["min_size"]
+        table_name = kwargs["table_name"]
+
+        self._table_name: str = table_name
+
+        pool = await asyncpg.create_pool(
+            connection_uri,
+            min_size=min_size,
+            max_size=max_size
+        )
+
+        self._connection = pool
+        return self._connection
 
     async def insert(
         self,
@@ -18,7 +33,7 @@ class PostgresDriver(Driver):
         name: str,
         mime: str
     ):
-        table_name = self.cache_values["__table_name__"]
+        table_name = self._table_name
         async with self._connection.acquire() as conn:
             query = (
                 f"INSERT INTO {table_name} (name, image, mime) VALUES ($1, $2, $3)"
@@ -32,7 +47,7 @@ class PostgresDriver(Driver):
         self,
         name: str
     ) -> Tuple[bytes, str]:
-        table_name = self.cache_values["__table_name__"]
+        table_name = self._table_name
         async with self._connection.acquire() as conn:
             query = (
                 f"SELECT image FROM {table_name} "
@@ -44,13 +59,9 @@ class PostgresDriver(Driver):
         mime = row["mime"]
         decompressed = self.decompress(image)
         return (decompressed, mime)
-        
+
     async def cleanup(self):
-        try:
-            await self._connection.close()
-        except Exception:
-            # disregard any errors that occur here.
-            pass
+        return await self._connection.close()
 
 _DRIVER = PostgresDriver
 _DRIVER_TYPE = "POSTGRES"

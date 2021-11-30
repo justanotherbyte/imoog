@@ -80,33 +80,20 @@ app.get_from_cache = get_cache
 @app.on_event("startup")
 async def on_startup():
     # connect to databases and ready caches.
-    driver_class, _type = _check_driver()
-    driver = None
-    if _type == "POSTGRES":
-        connection_uri = settings.DATABASE_DRIVERS["config"]["connection_uri"]
-        min_size = settings.DATABASE_DRIVERS["config"]["min_size"]
-        max_size = settings.DATABASE_DRIVERS["config"]["max_size"]
-        table = settings.DATABASE_DRIVERS["config"]["table_name"]
-        pool: Pool = await asyncpg.create_pool(
-            connection_uri,
-            min_size=min_size,
-            max_size=max_size
-        )
-        driver = driver_class(pool)
-        driver.set_custom_val("__table_name__", table)
-    elif _type == "MONGO":
-        connection_uri = settings.DATABASE_DRIVERS["config"]["connection_uri"]
-        database_name = settings.DATABASE_DRIVERS["config"]["database_name"]
-        collection_name = settings.DATABASE_DRIVERS["config"]["collection_name"]
-        client = AsyncIOMotorClient(connection_uri)
-        _db: AsyncIOMotorDatabase = client[database_name]
-        coll: AsyncIOMotorCollection = _db[collection_name]
-        driver = driver_class(coll)
-        driver.set_custom_val("__parent_client__", client)
+    driver_class, _ = _check_driver()
+    config = settings.DATABASE_DRIVERS["config"]
+    driver = driver_class()
+    await driver.connect(**config)
     
     app.db_driver = driver
 
 
 @app.on_event("shutdown")
 async def on_shutdown():
-    await app.db_driver.cleanup() # all error handling is done within this method.
+    try:
+        await app.db_driver.cleanup()
+    except Exception:
+        # disregard any errors that occur
+        # within the driver cleanup
+        # since this is when our application shuts-down.
+        pass

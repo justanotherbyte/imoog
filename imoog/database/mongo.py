@@ -1,20 +1,32 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Tuple
+from typing import Tuple
+
+from motor.motor_asyncio import (
+    AsyncIOMotorCollection,
+    AsyncIOMotorClient
+)
 
 from .drivers import Driver # import the base driver impl
 
-if TYPE_CHECKING:
-    from motor.motor_asyncio import (
-        AsyncIOMotorCollection,
-        AsyncIOMotorClient
-    )
-
 
 class MongoDriver(Driver):
-    def __init__(self, coll: AsyncIOMotorCollection):
-        super().__init__(conn=coll, identifier="mongo")
+    async def connect(self, **kwargs):
+        self.identifier = "mongo"
 
+        connection_uri = kwargs["connection_uri"]
+        database_name = kwargs["database_name"]
+        collection_name = kwargs["collection_name"]
+
+        client = AsyncIOMotorClient(connection_uri)
+        _db = client[database_name]
+        coll = _db[collection_name]
+        self._connection: AsyncIOMotorCollection = coll
+
+        # custom attributes
+        self._parent_client = client
+        return self._connection
+    
     async def insert(
         self,
         image: bytes,
@@ -41,12 +53,7 @@ class MongoDriver(Driver):
         return (decompressed, mime)
 
     async def cleanup(self):
-        client: AsyncIOMotorClient = self.cache_values["__parent_client__"]
-        try:
-            await client.close()
-        except Exception:
-            # disregard any errors here.
-            pass
+        return self._parent_client.close()
 
 _DRIVER = MongoDriver
 _DRIVER_TYPE = "MONGO"

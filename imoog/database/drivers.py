@@ -3,13 +3,14 @@ from typing import Any
 
 
 class Driver:
-    def __init__(self, *, conn: Any, identifier: str):
-        self._connection = conn # both supported database types
-        # will have some sort of supported connection type.
-        self.identifier = identifier # an identifier for internal use.
-        self.cache_values: dict = {} # some values to store that can be specific
-        # to certain drivers. This avoids needing to pass them into the common functions, ruining
-        # cross compatability.
+    def __init__(self):
+        self._connection = None # this connection instance
+        # is filled in the connect method.
+        self.identifier = None # this is custom per database driver.
+        # this attribute will be None until the connect method is called.
+
+    async def connect(self, **kwargs):
+        raise NotImplementedError
 
     async def insert(self, *args, **kwargs):
         raise NotImplementedError
