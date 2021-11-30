@@ -93,9 +93,10 @@ asyncio.get_event_loop().run_until_complete(main())
 ```
 
 ## Driver and dependency information
-Internally, imoog uses 2 different libraries for the 2 different supported database drivers. 
+Internally, imoog uses multiple different libraries for the many different supported database and cache drivers. 
 
 - PostgreSQL - [`asyncpg`](https://github.com/MagicStack/asyncpg)
 - MongoDB - [`motor`](https://github.com/mongodb/motor)
+- Redis - [`aioredis`](https://github.com/aio-libs/aioredis-py) (You can optionally install `aioredis[hiredis]` for a C based Redis protocol parser for additional speeds)
 
-Both of these libraries are currently the best in their field for asynchronous client side connections to their respective databases.
+All of these libraries are currently the best in their field for asynchronous client side connections to their respective databases.
