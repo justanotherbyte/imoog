@@ -43,7 +43,7 @@ async def upload_file(request: Request) -> JSONResponse:
     compressed = zlib.compress(image, level=int(COMPRESSION_LEVEL))
     name = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(FILE_NAME_LENGTH))
     await request.app.db_driver.insert(image=compressed, name=name, mime=mime)
-    request.app.insert_cache(name, {"image": image, "mime": mime}) # we insert the UNCOMPRESSED image into the cache, to avoid
+    await request.app.image_cache.set(key=name, image=image, mime=mime) # we insert the UNCOMPRESSED image into the cache, to avoid
     # having to decompress later. The whole point of the cache is to retrieve the value without any
     # extra processing required.
 
@@ -59,7 +59,7 @@ async def deliver_file(request: Request) -> Response:
     file_id = file_id.split(".")[0] # if a file extension has been provided, we split on the '.',
     # and return the file name.
 
-    cache_result = request.app.get_from_cache(file_id)
+    cache_result = await request.app.image_cache.get(file_id)
     if cache_result is None:
         image, mime = await request.app.db_driver.fetch(file_id) # this will decompress it for us too.
     else:

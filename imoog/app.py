@@ -3,11 +3,9 @@ from __future__ import annotations
 import importlib
 from typing import (
     TYPE_CHECKING,
-    Tuple,
-    Optional
+    Tuple
 )
 
-import asyncpg
 from starlette.applications import Starlette
 from starlette.routing import Route
 from starlette.middleware.cors import CORSMiddleware
@@ -17,13 +15,6 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from imoog.views import upload_file, deliver_file
 from imoog import settings
-
-if TYPE_CHECKING:
-    from asyncpg import Pool
-    from motor.motor_asyncio import (
-        AsyncIOMotorDatabase,
-        AsyncIOMotorCollection
-    )
 
 
 routes = [
@@ -46,7 +37,7 @@ app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.ALLOWED_HOSTS)
 if settings.ENFORCE_SECURE_SCHEME is True:
     app.add_middleware(HTTPSRedirectMiddleware)
 
-app.image_cache = {} # Dict[str, bytes]
+app.image_cache = None
 app.db_driver = None
 
 def _check_driver() -> Tuple[type, str]:
@@ -55,27 +46,14 @@ def _check_driver() -> Tuple[type, str]:
     driver = package._DRIVER
     _type = package._DRIVER_TYPE
     return (driver, _type)
-    
-def update_cache(key: str, value: bytes) -> dict:
-    max_size = settings.MAX_CACHE_SIZE
-    if len(app.image_cache.keys()) >= float(max_size):
-        return
-    
-    app.image_cache[key] = value
-    return {key: value}
 
-def get_cache(image: str) -> Optional[Tuple[bytes, str]]:
-    data = app.image_cache.get(image)
-    if data is None:
-        return None
+def _check_cache_driver() -> Tuple[type, str]:
+    _driver_path = settings.CACHE_DRIVERS["driver"]
+    package = importlib.import_module(_driver_path)
+    driver = package._DRIVER
+    _type = package._DRIVER_TYPE
+    return (driver, _type)
     
-    mime = data["mime"]
-    image = data["image"]
-    return (image, mime)
-    
-
-app.insert_cache = update_cache
-app.get_from_cache = get_cache
 
 @app.on_event("startup")
 async def on_startup():
@@ -84,14 +62,24 @@ async def on_startup():
     config = settings.DATABASE_DRIVERS["config"]
     driver = driver_class()
     await driver.connect(**config)
-    
+    cache_driver_class, _ = _check_cache_driver()
+    cache_config = settings.CACHE_DRIVERS["config"]
+    cache_driver = cache_driver_class()
+
+    cache_config["max_cache_size"] = settings.MAX_CACHE_SIZE # we pass this into
+    # the connect function of the cache driver regardless whether its the
+    # memory cache driver or not.
+    await cache_driver.connect(**cache_config)
+
     app.db_driver = driver
+    app.image_cache = cache_driver
 
 
 @app.on_event("shutdown")
 async def on_shutdown():
     try:
         await app.db_driver.cleanup()
+        await app.cache_driver.cleanup()
     except Exception:
         # disregard any errors that occur
         # within the driver cleanup

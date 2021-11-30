@@ -1,7 +1,7 @@
 DATABASE_DRIVERS = {
     "driver": "imoog.database.mongo", # https://www.mongodb.com/
     "config": {
-        "connection_uri": "database connection uri",
+        "connection_uri": "mongodb cluster connection uri",
         "database_name": "database name",
         "collection_name": "collection name"
     }
@@ -19,13 +19,33 @@ DATABASE_DRIVERS = {
 #     }
 # }
 
+CACHE_DRIVERS = {
+    "driver": "imoog.cache.memorycache",
+    "config": {} # leave this empty as memory caches have no config
+    # apart from the MAX_CACHE_SIZE which is inferred from the setting automatically.
+}
+
+##### Redis Cache Driver example
+# ==============================
+# CACHE_DRIVERS = {
+#     "driver": "imoog.cache.rediscache",
+#     "config": {
+#         "connection_uri": "redis connection uri",
+#         "username": "username for auth",
+#         "password": "password for auth"
+#         # please REMOVE the username and password keys if your redis instance
+#         # does not require username and password authentication
+#         # OR if your connection uri includes these details.
+#     }
+# }
+
 COMPRESSION_LEVEL = 6 # this is the optimal level for speed and compression.
 # the higher the number, the better the compression, but it takes longer.
 # the smaller the number, the worse the compression, but its much faster.
 
 MAX_CACHE_SIZE = 100 # set a maximum cache size. If you want a cache with no limit -
 # simply set this value to 'inf'. This is setting is useful if you have a limited amount
-# of memory to work with.
+# of memory to work with. THIS APPLIES ONLY TO THE IN MEMORY DATABASE.
 
 SECRET_KEY = "SET_A_CUSTOM_KEY" # a secret key that will be checked in the 'Authorization' header
 # whenever a POST request is made to /upload endpoint.
