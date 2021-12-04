@@ -20,7 +20,7 @@ DATABASE_DRIVERS = {
 # }
 
 CACHE_DRIVERS = {
-    "driver": "imoog.cache.memorycache",
+    "driver": "imoog.cache.memorycache", # basic in memory cache. Cleared everytime your node shutsdown.
     "config": {} # leave this empty as memory caches have no config
     # apart from the MAX_CACHE_SIZE which is inferred from the setting automatically.
 }
@@ -75,3 +75,6 @@ ENFORCE_SECURE_SCHEME = False # any incoming requests must be from,
 CORS_ALLOWED_ORIGINS = ["*"] # a list of allowed origins
 # that browsers are allowed to use in a Cross-Domain context.
 # by default, this is set to all domains.
+
+FALLBACK_FILE_EXT = "png" # the file extension that imoog will fallback on
+# if a file extension was unable to be parsed from the mime type.

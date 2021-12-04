@@ -12,7 +12,8 @@ from imoog.settings import (
     COMPRESSION_LEVEL,
     SECRET_KEY,
     FILE_NAME_LENGTH,
-    NOT_FOUND_STATUS_CODE
+    NOT_FOUND_STATUS_CODE,
+    FALLBACK_FILE_EXT
 )
 
 if TYPE_CHECKING:
@@ -47,10 +48,15 @@ async def upload_file(request: Request) -> JSONResponse:
     # having to decompress later. The whole point of the cache is to retrieve the value without any
     # extra processing required.
 
+    file_ext = FALLBACK_FILE_EXT
+    if mime:
+        file_ext = mime.split("/")[1]
+
     # if everything goes well, return an JSON response with a 200 status code and the unique file id.
     content = {
         "status": 200,
-        "file_id": name
+        "file_id": name,
+        "file_ext": file_ext
     }
     return JSONResponse(content, status_code=200)
 
