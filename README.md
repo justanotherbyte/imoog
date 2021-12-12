@@ -12,7 +12,7 @@ A database-based CDN node supporting PostgreSQL and MongoDB backends.
 </sup>
 <br>
 <sup>
-    <a href="https://www.digitalocean.com/community/tutorials/how-to-host-a-website-using-cloudflare-and-nginx-on-ubuntu-16-04">Ubuntu host guide by Digital Ocean.</a>
+    <a href="https://www.digitalocean.com/community/tutorials/how-to-host-a-website-using-cloudflare-and-nginx-on-ubuntu-20-04">Ubuntu host guide by Digital Ocean.</a>
 </sup>
 </p>
 
