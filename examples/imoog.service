@@ -1,0 +1,13 @@
+[Unit]
+Description=imoog CDN Node
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/path/to/directory/where/imoog/folder/is/in
+ExecStart=/path/to/python3 uvicorn imoog.app:app --workers 5 --port 2007
+User=username
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -61,6 +61,7 @@ To read more about sockets and which protocol will be the right one for you, ple
 ## Proxy
 ---
 - In order to use this node cleanly, I recommend placing yourself behind a proxy server. One of the most popular choices is [`NGINX`](https://www.nginx.com/).
+- Examples for both the Nginx conf file and systemd service file are inside the examples folder.
 
 ## Caching + Cloudflare
 ---
