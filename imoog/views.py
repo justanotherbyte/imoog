@@ -13,7 +13,8 @@ from imoog.settings import (
     SECRET_KEY,
     FILE_NAME_LENGTH,
     NOT_FOUND_STATUS_CODE,
-    FALLBACK_FILE_EXT
+    FALLBACK_FILE_EXT,
+    FILE_DELETED_STATUS_CODE
 )
 
 if TYPE_CHECKING:
@@ -86,3 +87,20 @@ async def delete_file(request: Request):
     file_id: str = request.path_params["name"]
     file_id = file_id.split(".")[0] # if a file extension has been provided, we split on the '.',
     # and return the file name.
+
+    # delete file from database first
+    driver_delete = await request.app.db_driver.delete(file_id)
+
+    # delete file from cache
+    cache_delete = await request.app.image_cache.delete(file_id)
+
+    status_code = FILE_DELETED_STATUS_CODE
+
+    if driver_delete is False or cache_delete is False:
+        status_code = 500
+
+    return Response(
+        None,
+        status_code=status_code,
+        media_type=None
+    )

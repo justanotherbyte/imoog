@@ -48,6 +48,7 @@ class PostgresDriver(Driver):
         name: str
     ) -> Tuple[bytes, str]:
         table_name = self._table_name
+
         async with self._connection.acquire() as conn:
             query = (
                 f"SELECT image FROM {table_name} "
@@ -59,6 +60,24 @@ class PostgresDriver(Driver):
         mime = row["mime"]
         decompressed = self.decompress(image)
         return (decompressed, mime)
+
+    async def delete(
+        self,
+        name: str
+    ) -> bool:
+        table_name = self._table_name
+        
+        try:
+            async with self._connection.acquire() as conn:
+                query = (
+                    f"DELETE FROM {table_name} "
+                    "WHERE image = $1"
+                )
+                await conn.execute(query, name)
+        except Exception:
+            return False
+        else:
+            return True
 
     async def cleanup(self):
         return await self._connection.close()

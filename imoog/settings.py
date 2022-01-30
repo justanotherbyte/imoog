@@ -78,3 +78,8 @@ CORS_ALLOWED_ORIGINS = ["*"] # a list of allowed origins
 
 FALLBACK_FILE_EXT = "png" # the file extension that imoog will fallback on
 # if a file extension was unable to be parsed from the mime type.
+
+FILE_DELETED_STATUS_CODE = 204 # the status code to return when
+# a file deletion has succeeded
+
+DELETE_ENDPOINT_METHODS = ["DELETE", "POST", "GET"]

@@ -52,6 +52,19 @@ class MongoDriver(Driver):
         decompressed = self.decompress(image)
         return (decompressed, mime)
 
+    async def delete(
+        self,
+        name: str
+    ) -> bool:
+        # Returns whether the delete succeeded or failed
+        query = {"_id": name}
+        try:
+            await self._connection.delete_one(query)
+        except Exception:
+            return False
+        else:
+            return True
+
     async def cleanup(self):
         return self._parent_client.close()
 

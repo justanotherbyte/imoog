@@ -11,9 +11,8 @@ from starlette.routing import Route
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
 
-from imoog.views import upload_file, deliver_file
+from imoog.views import upload_file, deliver_file, delete_file
 from imoog import settings
 
 
@@ -27,6 +26,11 @@ routes = [
         settings.DELIVER_ENDPOINT + r"{name:str}",
         deliver_file,
         methods=settings.DELIVER_ENDPOINT_METHODS
+    ),
+    Route(
+        "/delete",
+        delete_file,
+        methods=settings.DELETE_ENDPOINT_METHODS
     )
 ]
 
