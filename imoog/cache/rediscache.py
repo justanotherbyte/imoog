@@ -32,6 +32,12 @@ class RedisCache(Cache):
             
         return tuple(R)
 
+    async def delete(self, image: str):
+        futures = [
+            self._connection.delete(image),
+            self._connection.get(image + "__mime__")
+        ]
+
     async def set(
         self,
         key: str,

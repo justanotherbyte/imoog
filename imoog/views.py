@@ -81,3 +81,8 @@ async def deliver_file(request: Request) -> Response:
         status_code=200,
         media_type=mime
     ) # return a 200 response with the correct mime type. Example: image/png
+
+async def delete_file(request: Request):
+    file_id: str = request.path_params["name"]
+    file_id = file_id.split(".")[0] # if a file extension has been provided, we split on the '.',
+    # and return the file name.

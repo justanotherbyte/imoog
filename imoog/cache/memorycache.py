@@ -23,6 +23,17 @@ class InMemoryCache(Cache):
         
         return R
 
+    async def delete(self, key: str):
+        try:
+            self._connection.pop(key)
+            self._connection.pop(key + "__mime__")
+            # if the first pop fails, the second one will 
+            # fail too as its dependent on the first one to exist
+        except KeyError:
+            return 1 # failed
+
+        return 0 # success
+
     async def set(
         self,
         key: str,

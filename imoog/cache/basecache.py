@@ -13,6 +13,9 @@ class Cache:
 
     async def set(self, *args, **kwargs):
         raise NotImplementedError
+
+    async def delete(self, *args, **kwargs) -> int:
+        raise NotImplementedError
     
     async def cleanup(self):
         raise NotImplementedError
