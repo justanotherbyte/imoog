@@ -82,4 +82,8 @@ FALLBACK_FILE_EXT = "png" # the file extension that imoog will fallback on
 FILE_DELETED_STATUS_CODE = 204 # the status code to return when
 # a file deletion has succeeded
 
-DELETE_ENDPOINT_METHODS = ["DELETE", "POST", "GET"]
+DELETE_ENDPOINT_METHODS = ["DELETE", "POST", "GET"] # the allowed methods
+# for the delete endpoint
+
+REQUIRE_AUTH_FOR_DELETE = True # whether authorization is needed via the secret key
+# to delete the file

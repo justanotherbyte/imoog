@@ -14,6 +14,7 @@ from imoog.settings import (
     FILE_NAME_LENGTH,
     NOT_FOUND_STATUS_CODE,
     FALLBACK_FILE_EXT,
+    REQUIRE_AUTH_FOR_DELETE,
     FILE_DELETED_STATUS_CODE
 )
 
@@ -84,6 +85,14 @@ async def deliver_file(request: Request) -> Response:
     ) # return a 200 response with the correct mime type. Example: image/png
 
 async def delete_file(request: Request):
+    if REQUIRE_AUTH_FOR_DELETE is True:
+        auth = request.headers.get("authorization")
+        if auth != SECRET_KEY:
+            content = {
+                "message": "Invalid auth."
+            }
+        return JSONResponse(content, status_code=401)
+    
     file_id: str = request.path_params["name"]
     file_id = file_id.split(".")[0] # if a file extension has been provided, we split on the '.',
     # and return the file name.
