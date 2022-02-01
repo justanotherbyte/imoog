@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from typing import Tuple
+from typing import (
+    Tuple,
+    Mapping,
+    List,
+    Any
+)
 
 import asyncpg
 
@@ -78,6 +83,14 @@ class PostgresDriver(Driver):
             return False
         else:
             return True
+
+    async def fetch_all(self) -> List[Mapping[str, Any]]:
+        table_name = self._table_name
+
+        async with self._connection.acquire() as conn:
+            rows = await conn.fetch(f"SELECT * FROM {table_name}")
+
+        return (rows, "name")
 
     async def cleanup(self):
         return await self._connection.close()

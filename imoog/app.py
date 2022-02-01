@@ -1,18 +1,22 @@
 from __future__ import annotations
 
 import importlib
-from typing import (
-    TYPE_CHECKING,
-    Tuple
-)
+from typing import Tuple
 
 from starlette.applications import Starlette
-from starlette.routing import Route
+from starlette.routing import Route, Mount
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
+from starlette.templating import Jinja2Templates
+from starlette.staticfiles import StaticFiles
 
-from imoog.views import upload_file, deliver_file, delete_file
+from imoog.views import (
+    upload_file,
+    deliver_file,
+    delete_file,
+    dashboard_index
+)
 from imoog import settings
 
 
@@ -31,6 +35,15 @@ routes = [
         "/delete",
         delete_file,
         methods=settings.DELETE_ENDPOINT_METHODS
+    ),
+    Mount(
+        "/static",
+        StaticFiles(directory="imoog/dashboard/static"),
+        name="static"
+    ),
+    Route(
+        "/dashboard",
+        dashboard_index
     )
 ]
 
@@ -43,6 +56,7 @@ if settings.ENFORCE_SECURE_SCHEME is True:
 
 app.image_cache = None
 app.db_driver = None
+app.templating = Jinja2Templates(directory="imoog/dashboard/templates")
 
 def _check_driver() -> Tuple[type, str]:
     _driver_path = settings.DATABASE_DRIVERS["driver"]

@@ -3,10 +3,15 @@ from __future__ import annotations
 import zlib
 import random
 import string
+from urllib.parse import urljoin as _urljoin
 from typing import TYPE_CHECKING
 
 from starlette.requests import Request
-from starlette.responses import JSONResponse, Response
+from starlette.responses import (
+    JSONResponse,
+    Response,
+    HTMLResponse
+)
 
 from imoog.settings import (
     COMPRESSION_LEVEL,
@@ -15,7 +20,15 @@ from imoog.settings import (
     NOT_FOUND_STATUS_CODE,
     FALLBACK_FILE_EXT,
     REQUIRE_AUTH_FOR_DELETE,
-    FILE_DELETED_STATUS_CODE
+    FILE_DELETED_STATUS_CODE,
+    USE_OPENGRAPH,
+    OPENGRAPH_PROPERTIES,
+    OPENGRAPH_BASE_HTML,
+    DELIVER_ENDPOINT
+)
+from imoog.opengraph import (
+    generate_opengraph_tag,
+    generate_tags_from_dict
 )
 
 if TYPE_CHECKING:
@@ -67,6 +80,34 @@ async def deliver_file(request: Request) -> Response:
     file_id = file_id.split(".")[0] # if a file extension has been provided, we split on the '.',
     # and return the file name.
 
+    # possible mime is just for opengraph attributes
+    possible_mime = None
+    if len(file_id.split(".")) > 1:
+        possible_mime = file_id.split(".")[1]
+
+    # handle opengraph attributes. We put this before the network stuff, as we don't want to call it twice.
+    opengraph_pass = request.query_params.get("opengraph_pass")
+
+    if USE_OPENGRAPH is True and not opengraph_pass:
+        media_property = "video" if str(possible_mime).startswith("video") else "image"
+
+        media_url = _urljoin(str(request.base_url), DELIVER_ENDPOINT + file_id)
+        media_url += "?opengraph_pass=yes"
+        
+        media_tag = generate_opengraph_tag(media_property, media_url)
+        common_tags = generate_tags_from_dict(OPENGRAPH_PROPERTIES)
+        common_tags.append(media_tag)
+
+        complete_tags = "\n".join(common_tags)
+        og_html = OPENGRAPH_BASE_HTML.format(
+            opengraph=complete_tags
+        )
+        return HTMLResponse(
+            og_html,
+            status_code=200,
+            media_type="text/html"
+        )
+
     cache_result = await request.app.image_cache.get(file_id)
     if cache_result is None:
         image, mime = await request.app.db_driver.fetch(file_id) # this will decompress it for us too.
@@ -113,3 +154,19 @@ async def delete_file(request: Request):
         status_code=status_code,
         media_type=None
     )
+
+# Dashboard Related Routes
+
+async def dashboard_index(request: Request):
+    maps, i = await request.app.db_driver.fetch_all()
+    deliver_endp = DELIVER_ENDPOINT
+
+    
+    context = {
+        "maps": maps,
+        "deliver_endpoint": deliver_endp,
+        "request": request,
+        "identifier": i
+    }
+
+    return request.app.templating.TemplateResponse("index.html", context)

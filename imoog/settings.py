@@ -87,3 +87,30 @@ DELETE_ENDPOINT_METHODS = ["DELETE", "POST", "GET"] # the allowed methods
 
 REQUIRE_AUTH_FOR_DELETE = True # whether authorization is needed via the secret key
 # to delete the file
+
+USE_OPENGRAPH = True # tells imoog whether to use the set open graph properties
+# allows you to easily turn on and off open graph usage
+
+OPENGRAPH_PROPERTIES = {
+    "title": "a cool title",
+    "description": "some other cool description",
+    "type": "website",
+    "site_name": "imoog"
+} # these follow the opengraph specification. Say you add a property called "netflix", imoog will render it as
+# og:netflix. Be careful to not add invalid properties. DO NOT add the image or video properties. This will override
+# imoog's handling, and could break something internally.
+
+OPENGRAPH_BASE_HTML = """
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {opengraph}
+    <title>imoog</title>
+</head>
+<body>
+    
+</body>
+</html>
+""" # don't change this unless you actually know what you're doing.

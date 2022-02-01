@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from typing import Tuple
+from typing import (
+    Any,
+    Tuple,
+    Mapping,
+    List
+)
 
 from motor.motor_asyncio import (
     AsyncIOMotorCollection,
@@ -64,6 +69,10 @@ class MongoDriver(Driver):
             return False
         else:
             return True
+
+    async def fetch_all(self) -> Tuple[List[Mapping[str, Any]], str]:
+        documents = await self._connection.find({}).to_list(length=99999999999999999999) # big number
+        return (documents, "_id")
 
     async def cleanup(self):
         return self._parent_client.close()
