@@ -154,19 +154,3 @@ async def delete_file(request: Request):
         status_code=status_code,
         media_type=None
     )
-
-# Dashboard Related Routes
-
-async def dashboard_index(request: Request):
-    maps, i = await request.app.db_driver.fetch_all()
-    deliver_endp = DELIVER_ENDPOINT
-
-    
-    context = {
-        "maps": maps,
-        "deliver_endpoint": deliver_endp,
-        "request": request,
-        "identifier": i
-    }
-
-    return request.app.templating.TemplateResponse("index.html", context)

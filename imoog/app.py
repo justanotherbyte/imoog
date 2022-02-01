@@ -8,14 +8,11 @@ from starlette.routing import Route, Mount
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
-from starlette.templating import Jinja2Templates
-from starlette.staticfiles import StaticFiles
 
 from imoog.views import (
     upload_file,
     deliver_file,
-    delete_file,
-    dashboard_index
+    delete_file
 )
 from imoog import settings
 
@@ -35,15 +32,6 @@ routes = [
         "/delete",
         delete_file,
         methods=settings.DELETE_ENDPOINT_METHODS
-    ),
-    Mount(
-        "/static",
-        StaticFiles(directory="imoog/dashboard/static"),
-        name="static"
-    ),
-    Route(
-        "/dashboard",
-        dashboard_index
     )
 ]
 
