@@ -88,7 +88,7 @@ DELETE_ENDPOINT_METHODS = ["DELETE", "POST", "GET"] # the allowed methods
 REQUIRE_AUTH_FOR_DELETE = True # whether authorization is needed via the secret key
 # to delete the file
 
-USE_OPENGRAPH = True # tells imoog whether to use the set open graph properties
+USE_OPENGRAPH = False # tells imoog whether to use the set open graph properties
 # allows you to easily turn on and off open graph usage
 
 OPENGRAPH_PROPERTIES = {
