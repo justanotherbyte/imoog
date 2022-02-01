@@ -44,7 +44,6 @@ if settings.ENFORCE_SECURE_SCHEME is True:
 
 app.image_cache = None
 app.db_driver = None
-app.templating = Jinja2Templates(directory="imoog/dashboard/templates")
 
 def _check_driver() -> Tuple[type, str]:
     _driver_path = settings.DATABASE_DRIVERS["driver"]
