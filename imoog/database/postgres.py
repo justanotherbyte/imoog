@@ -29,6 +29,8 @@ class PostgresDriver(Driver):
             max_size=max_size
         )
         
+        self._connection = pool
+        
         # Creating the table in psql on connect
         # if it doesn't exist.
         async with self._connection.acquire() as conn:
@@ -42,7 +44,6 @@ class PostgresDriver(Driver):
             
             await conn.execute(query)
 
-        self._connection = pool
         return self._connection
 
     async def insert(
