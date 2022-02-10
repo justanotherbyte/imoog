@@ -37,7 +37,7 @@ class PostgresDriver(Driver):
             query = (
                 f"CREATE TABLE IF NOT EXISTS {table_name}("
                 "name TEXT,"
-                "image BYTEA,",
+                "image BYTEA,"
                 "mime TEXT"
                 ")"
             )
