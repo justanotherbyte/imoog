@@ -28,8 +28,22 @@ class PostgresDriver(Driver):
             min_size=min_size,
             max_size=max_size
         )
-
+        
         self._connection = pool
+        
+        # Creating the table in psql on connect
+        # if it doesn't exist.
+        async with self._connection.acquire() as conn:
+            query = (
+                f"CREATE TABLE IF NOT EXISTS {table_name}("
+                "name TEXT,"
+                "image BYTEA,"
+                "mime TEXT"
+                ")"
+            )
+            
+            await conn.execute(query)
+
         return self._connection
 
     async def insert(
@@ -56,7 +70,7 @@ class PostgresDriver(Driver):
 
         async with self._connection.acquire() as conn:
             query = (
-                f"SELECT image FROM {table_name} "
+                f"SELECT image, mime FROM {table_name} "
                 "WHERE name = $1"
             )
             row = await conn.fetchrow(query, name)
@@ -76,7 +90,7 @@ class PostgresDriver(Driver):
             async with self._connection.acquire() as conn:
                 query = (
                     f"DELETE FROM {table_name} "
-                    "WHERE image = $1"
+                    "WHERE name = $1"
                 )
                 await conn.execute(query, name)
         except Exception:
