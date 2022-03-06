@@ -23,20 +23,22 @@ class RedisCache(Cache):
     async def get(self, image: str):
         futures = [
             self._connection.get(image),
-            self._connection.get(image + "__mime__")
+            self._connection.get(f'{image}__mime__'),
         ]
+
         R = await asyncio.gather(*futures)
 
         if None in R:
             return None
-            
+
         return tuple(R)
 
     async def delete(self, image: str) -> bool:
         futures = [
             self._connection.delete(image),
-            self._connection.get(image + "__mime__")
+            self._connection.get(f'{image}__mime__'),
         ]
+
 
         try:
             await asyncio.gather(*futures)
@@ -53,8 +55,9 @@ class RedisCache(Cache):
     ):
         futures = [
             self._connection.set(key, image),
-            self._connection.set(key + "__mime__", mime)
+            self._connection.set(f'{key}__mime__', mime),
         ]
+
         await asyncio.gather(*futures)
     
     async def cleanup(self):
