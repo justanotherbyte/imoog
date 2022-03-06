@@ -6,7 +6,7 @@ from .basecache import Cache
 
 
 class RedisCache(Cache):
-    async def connect(self, **kwargs):
+    def connect(self, **kwargs):
         connection_uri = kwargs["connection_uri"]
         username = kwargs.get("username")
         password = kwargs.get("password")
