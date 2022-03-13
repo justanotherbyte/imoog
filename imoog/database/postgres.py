@@ -36,7 +36,7 @@ class PostgresDriver(Driver):
         async with self._connection.acquire() as conn:
             query = (
                 f"CREATE TABLE IF NOT EXISTS {table_name}("
-                "name TEXT,"
+                "name TEXT PRIMARY KEY,"
                 "image BYTEA,"
                 "mime TEXT"
                 ")"
