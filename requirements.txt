@@ -4,4 +4,3 @@ asyncpg <= 0.25.0
 motor <= 2.5.1
 python-multipart <= 0.0.5
 aioredis <= 2.0.0
-jinja2 <= 3.0.3
