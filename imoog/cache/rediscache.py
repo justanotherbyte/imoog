@@ -35,7 +35,7 @@ class RedisCache(Cache):
     async def delete(self, image: str) -> bool:
         futures = [
             self._connection.delete(image),
-            self._connection.get(image + "__mime__")
+            self._connection.delete(image + "__mime__")
         ]
 
         try:
