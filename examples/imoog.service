@@ -5,7 +5,7 @@ After=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=/root/myfolders/imoog/
-ExecStart=/root/myfolders/imoog/bin/python3 -m uvicorn imoog.app:app --port 6979 --workers 5
+ExecStart=/root/myfolders/imoog/bin/python3 -m uvicorn imoog.app:app --port 2007 --workers 5
 User=root
 Restart=always
 TimeoutStopSec=10
