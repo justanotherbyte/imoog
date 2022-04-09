@@ -44,7 +44,7 @@ COMPRESSION_LEVEL = 6 # this is the optimal level for speed and compression.
 # the smaller the number, the worse the compression, but its much faster.
 
 MAX_CACHE_SIZE = 100 # set a maximum cache size. If you want a cache with no limit -
-# simply set this value to 'inf'. This is setting is useful if you have a limited amount
+# simply set this value to 'inf'. This setting is useful if you have a limited amount
 # of memory to work with. THIS APPLIES ONLY TO THE IN MEMORY DATABASE.
 
 SECRET_KEY = "SET_A_CUSTOM_KEY" # a secret key that will be checked in the 'Authorization' header
