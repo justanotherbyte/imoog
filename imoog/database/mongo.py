@@ -12,10 +12,14 @@ from motor.motor_asyncio import (
     AsyncIOMotorClient
 )
 
-from .drivers import Driver # import the base driver impl
+from .drivers import Driver  # import the base driver impl
 
 
 class MongoDriver(Driver):
+    TABLE_NAME: str
+    _connection: AsyncIOMotorCollection
+    _parent_client: AsyncIOMotorClient
+
     async def connect(self, **kwargs):
         self.identifier = "mongo"
 
@@ -37,14 +41,14 @@ class MongoDriver(Driver):
         image: bytes,
         name: str,
         mime: str
-    ):
+    ) -> int:
         insert = {
             "_id": name,
             "image": image,
             "mime": mime
         }
         await self._connection.insert_one(insert)
-        return 0
+        return 0  # again, why?
 
     async def fetch(
         self,
@@ -52,10 +56,12 @@ class MongoDriver(Driver):
     ) -> Tuple[bytes, str]:
         query = {"_id": name}
         result = await self._connection.find_one(query)
+
         image = result["image"]
         mime = result["mime"]
         decompressed = self.decompress(image)
-        return (decompressed, mime)
+
+        return decompressed, mime
 
     async def delete(
         self,
@@ -63,19 +69,23 @@ class MongoDriver(Driver):
     ) -> bool:
         # Returns whether the delete succeeded or failed
         query = {"_id": name}
+        # noinspection PyBroadException
         try:
             await self._connection.delete_one(query)
+
         except Exception:
             return False
+
         else:
             return True
 
     async def fetch_all(self) -> Tuple[List[Mapping[str, Any]], str]:
-        documents = await self._connection.find({}).to_list(length=99999999999999999999) # big number
-        return (documents, "_id")
+        documents = await self._connection.find({}).to_list(length=99999999999999999999)  # big number
+        return documents, "_id"
 
     async def cleanup(self):
         return self._parent_client.close()
 
-_DRIVER = MongoDriver
-_DRIVER_TYPE = "MONGO"
+
+DB_DRIVER = MongoDriver
+DB_DRIVER_TYPE = "MONGO"
