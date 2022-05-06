@@ -25,12 +25,12 @@ class RedisCache(Cache):
             self._connection.get(image),
             self._connection.get(image + "__mime__")
         ]
-        R = await asyncio.gather(*futures)
+        r = await asyncio.gather(*futures)
 
-        if None in R:
+        if None in r:
             return None
             
-        return tuple(R)
+        return tuple(r)
 
     async def delete(self, image: str) -> bool:
         futures = [
@@ -38,10 +38,13 @@ class RedisCache(Cache):
             self._connection.delete(image + "__mime__")
         ]
 
+        # noinspection PyBroadException
         try:
             await asyncio.gather(*futures)
+
         except Exception:
             return False
+
         else:
             return True
 
@@ -60,5 +63,6 @@ class RedisCache(Cache):
     async def cleanup(self):
         return await self._connection.close()
 
-_DRIVER = RedisCache
-_DRIVER_TYPE = "REDIS"
+
+C_DRIVER = RedisCache
+C_DRIVER_TYPE = "REDIS"

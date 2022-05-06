@@ -3,11 +3,11 @@ from typing import Dict, List
 
 BASE_TAG = r'<meta property="{property}" content="{content}" />'
 
-def generate_opengraph_tag(property: str, content: str) -> str:
-    property = "og:" + property
+def generate_opengraph_tag(prop: str, content: str) -> str:
+    prop = "og:" + prop
     
     tag = BASE_TAG.format(
-        property=property,
+        property=prop,
         content=content
     )
 
@@ -16,8 +16,8 @@ def generate_opengraph_tag(property: str, content: str) -> str:
 def generate_tags_from_dict(properties: Dict[str, str]) -> List[str]:
     tags = []
 
-    for property, content in properties.items():
-        tag = generate_opengraph_tag(property, content)
+    for prop, content in properties.items():
+        tag = generate_opengraph_tag(prop, content)
         tags.append(tag)
 
     return tags
