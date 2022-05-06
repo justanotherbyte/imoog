@@ -21,5 +21,4 @@ class Driver:
         return {key: value}
 
     def decompress(self, _bytes: bytes) -> bytes:
-        decompressed = zlib.decompress(_bytes)
-        return decompressed
+        return zlib.decompress(_bytes)

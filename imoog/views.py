@@ -84,13 +84,7 @@ async def upload_file(request: Request) -> JSONResponse:
 async def deliver_file(request: Request) -> Response:
     file_id: str = request.path_params["name"]
     file_id = file_id.split(".")[0]  # if a file extension has been provided, we split on the '.',
-    # and return the file name.
-
-    # possible mime is just for opengraph attributes
-    possible_mime = None
-    if len(file_id.split(".")) > 1:
-        possible_mime = file_id.split(".")[1]
-
+    possible_mime = file_id.split(".")[1] if len(file_id.split(".")) > 1 else None
     # handle opengraph attributes. We put this before the network stuff, as we don't want to call it twice.
     opengraph_pass = request.query_params.get("opengraph_pass")
 

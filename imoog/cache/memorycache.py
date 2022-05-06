@@ -17,7 +17,7 @@ class InMemoryCache(Cache):
         return self._connection
 
     async def get(self, key: str):
-        mime = self._connection.get(key + "__mime__")
+        mime = self._connection.get(f"{key}__mime__")
         image = self._connection.get(key)
         r = (image, mime)
 
@@ -29,9 +29,9 @@ class InMemoryCache(Cache):
     async def delete(self, key: str) -> bool:
         try:
             self._connection.pop(key)
-            self._connection.pop(key + "__mime__")
-            # if the first pop fails, the second one will 
-            # fail too as its dependent on the first one to exist
+            self._connection.pop(f"{key}__mime__")
+                # if the first pop fails, the second one will 
+                # fail too as its dependent on the first one to exist
 
         except KeyError:
             return False  # failed
@@ -45,7 +45,7 @@ class InMemoryCache(Cache):
             mime: str
     ):
         self._connection[key] = image
-        self._connection[key + "__mime__"] = mime
+        self._connection[f"{key}__mime__"] = mime
 
     async def cleanup(self):
         # believe it or not
