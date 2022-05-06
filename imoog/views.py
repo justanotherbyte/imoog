@@ -43,23 +43,28 @@ async def upload_file(request: Request) -> JSONResponse:
             "message": "Invalid auth."
         }
         return JSONResponse(content, status_code=401)
-    
+
+    # noinspection PyTypeChecker
     form: MultiDict = await request.form()
     _file: UploadFile = form.get("file")
+
     if _file is None:
         print("\033[91mReceived an upload request that has not given us a 'file' to upload\033[0m")
         content = {
             "message": "No 'file' given."
         }
         return JSONResponse(content, status_code=400)
-    
+
     await _file.seek(0)
     image = await _file.read()
     mime = _file.content_type
     compressed = zlib.compress(image, level=int(COMPRESSION_LEVEL))
-    name = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(FILE_NAME_LENGTH))
+    name = ''.join(
+        random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(FILE_NAME_LENGTH))
+
     await request.app.db_driver.insert(image=compressed, name=name, mime=mime)
-    await request.app.image_cache.set(key=name, image=image, mime=mime) # we insert the UNCOMPRESSED image into the cache, to avoid
+    await request.app.image_cache.set(key=name, image=image,
+                                      mime=mime)  # we insert the UNCOMPRESSED image into the cache, to avoid
     # having to decompress later. The whole point of the cache is to retrieve the value without any
     # extra processing required.
 
@@ -73,18 +78,13 @@ async def upload_file(request: Request) -> JSONResponse:
         "file_id": name,
         "file_ext": file_ext
     }
-    return JSONResponse(content, status_code=200)
+    return JSONResponse(content)
+
 
 async def deliver_file(request: Request) -> Response:
     file_id: str = request.path_params["name"]
-    file_id = file_id.split(".")[0] # if a file extension has been provided, we split on the '.',
-    # and return the file name.
-
-    # possible mime is just for opengraph attributes
-    possible_mime = None
-    if len(file_id.split(".")) > 1:
-        possible_mime = file_id.split(".")[1]
-
+    file_id = file_id.split(".")[0]  # if a file extension has been provided, we split on the '.',
+    possible_mime = file_id.split(".")[1] if len(file_id.split(".")) > 1 else None
     # handle opengraph attributes. We put this before the network stuff, as we don't want to call it twice.
     opengraph_pass = request.query_params.get("opengraph_pass")
 
@@ -93,7 +93,7 @@ async def deliver_file(request: Request) -> Response:
 
         media_url = _urljoin(str(request.base_url), DELIVER_ENDPOINT + file_id)
         media_url += "?opengraph_pass=yes"
-        
+
         media_tag = generate_opengraph_tag(media_property, media_url)
         common_tags = generate_tags_from_dict(OPENGRAPH_PROPERTIES)
         common_tags.append(media_tag)
@@ -104,26 +104,26 @@ async def deliver_file(request: Request) -> Response:
         )
         return HTMLResponse(
             og_html,
-            status_code=200,
             media_type="text/html"
         )
 
     cache_result = await request.app.image_cache.get(file_id)
+
     if cache_result is None:
-        image, mime = await request.app.db_driver.fetch(file_id) # this will decompress it for us too.
+        image, mime = await request.app.db_driver.fetch(file_id)  # this will decompress it for us too.
     else:
         image, mime = cache_result
 
     if image is None:
         # return an empty response with a 404, or a custom status code
         # which would've been provided in settings.py
-        return Response(None, status_code=NOT_FOUND_STATUS_CODE)
+        return Response(status_code=NOT_FOUND_STATUS_CODE)
 
     return Response(
         image,
-        status_code=200,
         media_type=mime
-    ) # return a 200 response with the correct mime type. Example: image/png
+    )  # return a 200 response with the correct mime type. Example: image/png
+
 
 async def delete_file(request: Request):
     if REQUIRE_AUTH_FOR_DELETE is True:
@@ -132,10 +132,10 @@ async def delete_file(request: Request):
             content = {
                 "message": "Invalid auth."
             }
-        return JSONResponse(content, status_code=401)
-    
+            return JSONResponse(content, status_code=401)  # this was really critical before i fixed it
+
     file_id: str = request.path_params["name"]
-    file_id = file_id.split(".")[0] # if a file extension has been provided, we split on the '.',
+    file_id = file_id.split(".")[0]  # if a file extension has been provided, we split on the '.',
     # and return the file name.
 
     # delete file from database first
@@ -150,7 +150,5 @@ async def delete_file(request: Request):
         status_code = 500
 
     return Response(
-        None,
-        status_code=status_code,
-        media_type=None
+        status_code=status_code
     )

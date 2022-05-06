@@ -1,10 +1,8 @@
 import zlib
-from typing import Any
-
 
 class Driver:
     def __init__(self):
-        self._connection = None # this connection instance
+        self.pool = None # this connection instance
         # is filled in the connect method.
         self.identifier = None # this is custom per database driver.
         # this attribute will be None until the connect method is called.
@@ -23,5 +21,4 @@ class Driver:
         return {key: value}
 
     def decompress(self, _bytes: bytes) -> bytes:
-        decompressed = zlib.decompress(_bytes)
-        return decompressed
+        return zlib.decompress(_bytes)
