@@ -21,7 +21,6 @@ pub struct Config {
 
 #[derive(Deserialize, Clone)]
 pub struct Imoog {
-    pub force_https: bool,
     pub password: String,
     pub id_length: usize,
     pub fallback_mime: String,

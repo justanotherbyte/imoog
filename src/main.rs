@@ -5,6 +5,7 @@ use axum::{
     http::StatusCode,
     routing::{post, get}
 };
+use tracing::info;
 use tower_http::catch_panic::CatchPanicLayer;
 use once_cell::sync::OnceCell;
 use std::{
@@ -52,6 +53,8 @@ impl IntoResponse for Error {
 
 #[tokio::main]
 async fn main() {
+    tracing_subscriber::fmt::init();
+
     let config_raw = fs::read_to_string("imoog.config.toml")
         .expect("Failed to read imoog.config.toml file. Are you sure it exists, and lives in the cwd?");
 
@@ -60,6 +63,7 @@ async fn main() {
 
     let database_driver = config.database.driver.as_str();
 
+    info!("Attempting to connect to database");
     match database_driver {
         "mongo" => {
             let driver = MongoDriver::new(config.database.connection_uri.as_str())
@@ -68,7 +72,8 @@ async fn main() {
             STATE.set(State {
                 database: Box::new(driver),
                 config: config.clone()
-            }).unwrap() // we know its empty, so its fine here
+            }).unwrap(); // we know its empty, so its fine here
+            info!("Connected to MongoDB database")
         },
         "postgres" => {
             let driver = PostgresDriver::new(config.database.connection_uri.as_str())
@@ -76,7 +81,8 @@ async fn main() {
             STATE.set(State {
                 database: Box::new(driver),
                 config: config.clone()
-            }).unwrap()
+            }).unwrap();
+            info!("Connected to PostgreSQL database")
         },
         other => {
             panic!("Unknown database driver {other}")
@@ -92,6 +98,7 @@ async fn main() {
 
     let addr = SocketAddr::from((config.server.host, config.server.port));
 
+    info!("Serving...");
     Server::bind(&addr)
         .serve(router.into_make_service())
         .await
