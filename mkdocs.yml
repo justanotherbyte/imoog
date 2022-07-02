@@ -1,4 +1,5 @@
 site_name: imoog
+site_description: A database-based CDN node supporting PostgreSQL and MongoDB backends.
 
 theme:
   name: material
