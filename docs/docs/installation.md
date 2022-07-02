@@ -5,7 +5,7 @@
 
 Configuring an imoog node is pretty darn simple! imoog uses the `TOML` format for its configuration file. Here's an example:
 
-```toml
+```toml title="imoog.config.toml"
 [server]
 host = [127, 0, 0, 1]
 port= 6969
