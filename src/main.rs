@@ -83,9 +83,11 @@ async fn main() {
         }
     }
 
+    let deliver_endpoint = format!("{}:identifier", config.imoog.deliver_endpoint);
+
     let router = Router::new()
         .route("/upload", post(upload_media))
-        .route("/media/:identifier", get(deliver_media))
+        .route(deliver_endpoint.as_str(), get(deliver_media))
         .layer(CatchPanicLayer::new());
 
     let addr = SocketAddr::from((config.server.host, config.server.port));
