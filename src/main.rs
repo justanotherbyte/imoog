@@ -22,6 +22,8 @@ use database::{
     postgres::PostgresDriver
 };
 
+mod cache;
+
 mod state;
 use state::State;
 
