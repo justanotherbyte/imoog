@@ -94,3 +94,22 @@ pub async fn deliver_media(Path(identifier): Path<String>) -> ImoogResult<Respon
 
     Ok(response)
 }
+
+pub async fn delete_media(Path(identifier): Path<String>, headers: HeaderMap) -> ImoogResult<StatusCode> {
+    let state = STATE.get().expect("Request received before state has been filled");
+
+    let auth = headers.get(AUTHORIZATION);
+    if let Some(auth) = auth {
+        let value = auth.to_str()?;
+        if value != state.config.imoog.password {
+            return Ok(StatusCode::UNAUTHORIZED)
+        }
+    } else {
+        return Ok(StatusCode::BAD_REQUEST)
+    }
+
+    state.database.delete(identifier)
+        .await?;
+
+    Ok(StatusCode::NO_CONTENT)
+}

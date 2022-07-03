@@ -3,7 +3,7 @@ use axum::{
     Router,
     response::{IntoResponse, Response},
     http::StatusCode,
-    routing::{post, get}
+    routing::{post, get, delete}
 };
 use tracing::info;
 use tower_http::catch_panic::CatchPanicLayer;
@@ -28,7 +28,8 @@ use state::State;
 mod routes;
 use routes::{
     upload_media,
-    deliver_media
+    deliver_media,
+    delete_media
 };
 
 // some global stuff
@@ -94,6 +95,7 @@ async fn main() {
     let router = Router::new()
         .route("/upload", post(upload_media))
         .route(deliver_endpoint.as_str(), get(deliver_media))
+        .route("/delete/:identifier", delete(delete_media))
         .layer(CatchPanicLayer::new());
 
     let addr = SocketAddr::from((config.server.host, config.server.port));
