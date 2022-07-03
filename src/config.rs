@@ -7,7 +7,7 @@ pub struct Server {
 }
 
 #[derive(Deserialize, Clone)]
-pub struct Database {
+pub struct DriverInfo {
     pub connection_uri: String,
     pub driver: String
 }
@@ -15,7 +15,8 @@ pub struct Database {
 #[derive(Deserialize, Clone)]
 pub struct Config {
     pub server: Server,
-    pub database: Database,
+    pub database: DriverInfo,
+    pub cache: DriverInfo,
     pub imoog: Imoog
 }
 

@@ -33,6 +33,10 @@ features = ["multipart", "headers"]
 version = "1.19.2"
 features = ["full"]
 
+[dependencies.redis]
+version = "0.21.5"
+features = ["tokio-comp", "tokio-native-tls-comp"]
+
 [dependencies.serde]
 version = "1.0.137"
 features = ["derive"]

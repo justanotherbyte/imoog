@@ -19,10 +19,15 @@ use config::Config;
 mod database;
 use database::{
     mongo::MongoDriver,
-    postgres::PostgresDriver
+    postgres::PostgresDriver,
+    traits::DatabaseTrait
 };
 
 mod cache;
+use cache::{
+    redis::RedisCache,
+    traits::CacheTrait
+};
 
 mod state;
 use state::State;
@@ -64,33 +69,52 @@ async fn main() {
     let config: Config = toml::from_str(config_raw.as_str())
         .expect("Failed to parse config file");
 
-    let database_driver = config.database.driver.as_str();
+    let database_driver_name = config.database.driver.as_str();
+    let cache_driver_name = config.cache.driver.as_str();
+
+    let database_driver: Box<dyn DatabaseTrait + Send + Sync + 'static>;
+    let cache_driver: Box<dyn CacheTrait + Send + Sync + 'static>;
 
     info!("Attempting to connect to database");
-    match database_driver {
+    match database_driver_name {
         "mongo" => {
             let driver = MongoDriver::new(config.database.connection_uri.as_str())
                 .await; // panics occur within the new method
                 // i don't like handling results in match blocks
-            STATE.set(State {
-                database: Box::new(driver),
-                config: config.clone()
-            }).unwrap(); // we know its empty, so its fine here
+            database_driver = Box::new(driver);
             info!("Connected to MongoDB database")
         },
         "postgres" => {
             let driver = PostgresDriver::new(config.database.connection_uri.as_str())
                 .await;
-            STATE.set(State {
-                database: Box::new(driver),
-                config: config.clone()
-            }).unwrap();
+            database_driver = Box::new(driver);
             info!("Connected to PostgreSQL database")
         },
         other => {
             panic!("Unknown database driver {other}")
         }
     }
+
+    match cache_driver_name {
+        "redis" => {
+            let driver = RedisCache::new(config.cache.connection_uri.as_str())
+                .await;
+            cache_driver = Box::new(driver);
+            info!("Connected to Redis instance")
+        },
+        "memory" => {
+            todo!()
+        },
+        other => {
+            panic!("Unknown cache driver {other}")
+        }
+    }
+    
+    STATE.set(State {
+        database: database_driver,
+        cache: cache_driver,
+        config: config.clone()
+    }).unwrap(); // we know that its going to be empty
 
     let deliver_endpoint = format!("{}:identifier", config.imoog.deliver_endpoint);
 

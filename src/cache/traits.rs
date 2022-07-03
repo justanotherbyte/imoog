@@ -6,7 +6,7 @@ use crate::{
 
 #[async_trait]
 pub trait CacheTrait {
-    async fn insert(&self, media: &MediaData) -> ImoogResult<()>;
-    async fn get(&self, identifier: String) -> ImoogResult<Option<MediaData>>;
-    async fn delete(&self, identifier: String) -> ImoogResult<()>;
+    async fn insert(&mut self, media: &MediaData) -> ImoogResult<()>;
+    async fn get(&mut self, identifier: String) -> ImoogResult<Option<MediaData>>;
+    async fn delete(&mut self, identifier: String) -> ImoogResult<()>;
 }
