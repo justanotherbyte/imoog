@@ -15,8 +15,8 @@ host = [127, 0, 0, 1]
 port= 6969
 
 [database]
-connection_uri = "a mongodb connection uri"
-driver = "mongo"
+connection_uri = "a mongodb connection uri" # or a postgres connection uri
+driver = "mongo" # or postgres
 
 [imoog]
 force_https = true
