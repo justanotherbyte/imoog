@@ -21,7 +21,7 @@ rapidly being adopted by many large companies, most notably Amazon, with its use
 - [x] Lightweight
 - [x] PostgreSQL support
 - [x] MongoDB support
-- [x] Redis/KeyDB support (cache)
+- [x] Speedy cache (thanks to dashmap)
 - [x] Permissive License
 
 

@@ -18,11 +18,6 @@ port= 6969
 connection_uri = "a mongodb connection uri"
 driver = "mongo"
 
-[cache]
-connection_uri = "blank/redis connection uri" # use "blank" if
-# your driver is "memory"
-driver = "memory/redis"
-
 [imoog]
 force_https = true
 password = "my super secret password"

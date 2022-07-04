@@ -16,7 +16,6 @@ pub struct DriverInfo {
 pub struct Config {
     pub server: Server,
     pub database: DriverInfo,
-    pub cache: DriverInfo,
     pub imoog: Imoog
 }
 

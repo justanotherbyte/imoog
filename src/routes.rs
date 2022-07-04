@@ -10,7 +10,8 @@ use bytes::Bytes;
 
 use crate::{
     ImoogResult,
-    STATE
+    STATE,
+    database::traits::MediaData
 };
 
 #[derive(Serialize, Deserialize)]
@@ -66,8 +67,19 @@ pub async fn upload_media(mut multipart: Multipart, headers: HeaderMap) -> Imoog
 pub async fn deliver_media(Path(identifier): Path<String>) -> ImoogResult<Response<Body>> {
     let state = STATE.get().expect("Request received before state has been filled");
 
-    let media = state.database.get(identifier)
-        .await?;
+    let media: Option<MediaData>;
+    let mut update_cache = false;
+
+    let cache_result = state.cache.get(&identifier);
+    
+    if let Some(cr) = cache_result {
+        media = Some(cr)
+    } else {
+        let db_result = state.database.get(identifier.clone())
+            .await?;
+        media = db_result;
+        update_cache = true
+    }
     
     let status_code;
     let media_content;
@@ -75,6 +87,9 @@ pub async fn deliver_media(Path(identifier): Path<String>) -> ImoogResult<Respon
 
     match media {
         Some(m) => {
+            if update_cache {
+                state.cache.insert(identifier, m.clone());
+            }
             let content = inflate::inflate_bytes_zlib(&m.content).expect("Failed to inflate content"); // catch panic layer :)
             media_content = Bytes::from(content);
             status_code = 200;
@@ -108,6 +123,7 @@ pub async fn delete_media(Path(identifier): Path<String>, headers: HeaderMap) ->
         return Ok(StatusCode::BAD_REQUEST)
     }
 
+    state.cache.delete(&identifier);
     state.database.delete(identifier)
         .await?;
 

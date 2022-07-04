@@ -24,10 +24,7 @@ use database::{
 };
 
 mod cache;
-use cache::{
-    redis::RedisCache,
-    traits::CacheTrait
-};
+use cache::Cache;
 
 mod state;
 use state::State;
@@ -70,10 +67,8 @@ async fn main() {
         .expect("Failed to parse config file");
 
     let database_driver_name = config.database.driver.as_str();
-    let cache_driver_name = config.cache.driver.as_str();
 
     let database_driver: Box<dyn DatabaseTrait + Send + Sync + 'static>;
-    let cache_driver: Box<dyn CacheTrait + Send + Sync + 'static>;
 
     info!("Attempting to connect to database");
     match database_driver_name {
@@ -95,24 +90,11 @@ async fn main() {
         }
     }
 
-    match cache_driver_name {
-        "redis" => {
-            let driver = RedisCache::new(config.cache.connection_uri.as_str())
-                .await;
-            cache_driver = Box::new(driver);
-            info!("Connected to Redis instance")
-        },
-        "memory" => {
-            todo!()
-        },
-        other => {
-            panic!("Unknown cache driver {other}")
-        }
-    }
+    let cache = Cache::build();
     
     STATE.set(State {
         database: database_driver,
-        cache: cache_driver,
+        cache,
         config: config.clone()
     }).unwrap(); // we know that its going to be empty
 
