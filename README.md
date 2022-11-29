@@ -20,3 +20,5 @@
   ·
   <a href="https://imoog.readthedocs.io/en/latest/installation/#configuration">Configuration</a>
 </p>
+
+Note: Other people have tested this branch and have said it works fine. I haven't directly tested it myself so I can give no guarantee that it works. Feel free to clone it and test it yourself though! PR's always welcome.
