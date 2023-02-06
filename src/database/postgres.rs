@@ -26,7 +26,7 @@ impl DatabaseTrait for PostgresDriver {
             .await
             .ok();
         
-        println("{row:?}");
+        println!("{row:?}");
 
         Ok(row.map(|x| {
             MediaData {
