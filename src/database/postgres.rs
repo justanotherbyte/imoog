@@ -22,7 +22,7 @@ impl DatabaseTrait for PostgresDriver {
     async fn get(&self, identifier: String) -> ImoogResult<Option<MediaData>> {
         let row: Option<PostgresValues> = sqlx::query_as("SELECT (identifier, media, mime) FROM imoog WHERE identifier = $1")
             .bind(identifier)
-            .fetch_one(&self.pool)
+            .fetch_optional(&self.pool)
             .await
             .ok();
         
