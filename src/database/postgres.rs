@@ -20,7 +20,7 @@ type PostgresValues = (String, Vec<u8>, String);
 #[async_trait]
 impl DatabaseTrait for PostgresDriver {
     async fn get(&self, identifier: String) -> ImoogResult<Option<MediaData>> {
-        dbg!(identifier);
+        dbg!(&identifier)
         let row: Option<PostgresValues> = sqlx::query_as("SELECT (identifier, media, mime) FROM imoog WHERE identifier = $1")
             .bind(identifier)
             .fetch_one(&self.pool)
