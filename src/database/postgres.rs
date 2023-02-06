@@ -23,7 +23,7 @@ impl DatabaseTrait for PostgresDriver {
         dbg!(identifier);
         let row: Option<PostgresValues> = sqlx::query_as("SELECT (identifier, media, mime) FROM imoog WHERE identifier = $1")
             .bind(identifier)
-            .fetch_optional(&self.pool)
+            .fetch_one(&self.pool)
             .await
             .ok();
         
