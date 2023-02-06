@@ -15,7 +15,7 @@ pub struct PostgresDriver {
     pool: Pool<Postgres>
 }
 
-type PostgresValues = (String, Vec<u8>, String);
+type PostgresValues = ((String, Vec<u8>, String),);
 
 #[async_trait]
 impl DatabaseTrait for PostgresDriver {
@@ -23,13 +23,12 @@ impl DatabaseTrait for PostgresDriver {
         dbg!(&identifier);
         let row: Option<PostgresValues> = sqlx::query_as("SELECT (identifier, media, mime) FROM imoog WHERE identifier = $1")
             .bind(identifier)
-            .fetch_one(&self.pool)
-            .await
-            .ok();
+            .fetch_optional(&self.pool)
+            .await.unwrap();
         
         println!("{row:?}");
 
-        Ok(row.map(|x| {
+        Ok(row.map(|(x,)| {
             MediaData {
                 _id: x.0,
                 content: x.1,
